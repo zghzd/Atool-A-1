@@ -147,6 +147,9 @@
     <ClInclude Include="External_library.h" />
     <ClInclude Include="sky_candle.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="CC-BY-4.0.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

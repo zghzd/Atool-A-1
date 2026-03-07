@@ -25,11 +25,11 @@ namespace sky_::candle {
 		//雨林：
 	};
 	//lights===================================================================================
-	int	L_CANDLE = 1001;
-	int L_CLAM = 1002;
-	int L_DARKNESS_TREE = 1003;
-	int L_DARKNESS_PLANT = 1004;
-	int L_UNDERWATER_LIGHTS = 1005;
+	inline int	L_CANDLE = 1001;
+	inline int L_CLAM = 1002;
+	inline int L_DARKNESS_TREE = 1003;
+	inline int L_DARKNESS_PLANT = 1004;
+	inline int L_UNDERWATER_LIGHTS = 1005;
 	//===================================================================================
 	struct Axyz {
 		float x;//right/left
