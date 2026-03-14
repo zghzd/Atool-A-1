@@ -20,12 +20,12 @@ https://github.com/zghzd/yi_Shared-library.git
 
 ## 许可协议  
 除非特别说明，本存储库使用
-[CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/)
+[CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode.txt)
 许可协议。  
 根据许可协议，你必须提供适当的署名，许可人指定的有效署名是：  
 
 - 你必须在署名中链接到本
 [存储库](https://github.com/zghzd/Atool-A-1):
 https://github.com/zghzd/Atool-A-1
-- 同时链接到[开发者](dzfg688523@dingtalk.com):
+- 同时链接到开发者邮箱:
 dzfg688523@dingtalk.com  

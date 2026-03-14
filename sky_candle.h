@@ -42,8 +42,9 @@ namespace sky_::candle {
 		Axyz light_xyz;
 	};
 	struct tp_scene {
-		Axyz tp_xyz;
-		int s_code;
+		Axyz tp_xyz;//where
+		int s_code;//goal scene code
+		Axyz to_tp_xyz;//where you at next scene
 	};
 	struct scene {
 		std::string name;
