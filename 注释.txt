@@ -1,0 +1,21 @@
+					scene:
+std::string name;
+int s_code;
+std::vector<light>s_light;
+std::vector<tp_scene>tps;
+int t;//time of every "tps",1t=1s
+
+					Axyz:
+float x;//right/left
+float y;//up/down
+float z;//front/back
+
+					light:
+int type;
+int num;
+Axyz light_xyz;
+
+					tp_scene:
+Axyz tp_xyz;//where
+int s_code;//goal scene code
+Axyz to_tp_xyz;//where you at next scene

@@ -130,7 +130,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Atool-A-1.cpp" />
-    <ClCompile Include="sky_candle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="doc-sky_candle.md">
@@ -145,10 +144,13 @@
   <ItemGroup>
     <ClInclude Include="agreements.h" />
     <ClInclude Include="External_library.h" />
-    <ClInclude Include="sky_candle.h" />
+    <ClInclude Include="sky_candle_base.h" />
+    <ClInclude Include="sky_scene_base_data.h" />
+    <ClInclude Include="sky_scene_sceneenum.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="CC-BY-4.0.txt" />
+    <Text Include="注释.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
