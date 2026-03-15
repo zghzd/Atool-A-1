@@ -150,7 +150,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="CC-BY-4.0.txt" />
-    <Text Include="注释.txt" />
+    <Text Include="注释-structs.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

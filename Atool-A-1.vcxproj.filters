@@ -48,7 +48,7 @@
     <Text Include="CC-BY-4.0.txt">
       <Filter>资源文件</Filter>
     </Text>
-    <Text Include="注释.txt">
+    <Text Include="注释-structs.txt">
       <Filter>资源文件</Filter>
     </Text>
   </ItemGroup>
