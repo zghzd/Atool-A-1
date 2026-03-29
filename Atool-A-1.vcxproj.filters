@@ -26,6 +26,9 @@
     <None Include="doc-sky_candle.md">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="UpdateLog.md">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External_library.h">
@@ -34,21 +37,12 @@
     <ClInclude Include="agreements.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="sky_candle_base.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="sky_scene_sceneenum.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="sky_scene_base_data.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="CC-BY-4.0.txt">
-      <Filter>资源文件</Filter>
-    </Text>
-    <Text Include="注释-structs.txt">
       <Filter>资源文件</Filter>
     </Text>
   </ItemGroup>

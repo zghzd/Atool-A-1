@@ -140,17 +140,18 @@
       <SubType>
       </SubType>
     </None>
+    <None Include="UpdateLog.md">
+      <SubType>
+      </SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="agreements.h" />
     <ClInclude Include="External_library.h" />
-    <ClInclude Include="sky_candle_base.h" />
-    <ClInclude Include="sky_scene_base_data.h" />
     <ClInclude Include="sky_scene_sceneenum.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="CC-BY-4.0.txt" />
-    <Text Include="注释-structs.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
