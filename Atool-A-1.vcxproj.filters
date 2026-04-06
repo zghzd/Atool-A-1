@@ -18,6 +18,12 @@
     <ClCompile Include="Atool-A-1.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="loadScenes.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="mainrun.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md">
@@ -38,6 +44,18 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="sky_scene_sceneenum.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="base.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="scenereg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="loadScenes.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="mainrun.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

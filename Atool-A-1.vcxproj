@@ -130,6 +130,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Atool-A-1.cpp" />
+    <ClCompile Include="loadScenes.cpp" />
+    <ClCompile Include="mainrun.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="doc-sky_candle.md">
@@ -147,7 +149,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="agreements.h" />
+    <ClInclude Include="base.h" />
     <ClInclude Include="External_library.h" />
+    <ClInclude Include="loadScenes.h" />
+    <ClInclude Include="mainrun.h" />
+    <ClInclude Include="scenereg.h" />
     <ClInclude Include="sky_scene_sceneenum.h" />
   </ItemGroup>
   <ItemGroup>

@@ -17,12 +17,12 @@
 
 # 启动与参数
 程序命令语法为：  
-` Atool-A-1 --total_candle-<float> [--use-<file>] [--owned_candle-<float>] [--max_candle-<float>] [--no-<keyworld>] (-en|-cn) `  
+` Atool-A-1 --total_candle-<float> [--use-<file>] [--owned_candle-<float>] [--max_candle-<float>] [--no-<keyword>] (-en|-cn) `  
 其中，--total_candle为你所需的蜡烛总数；
 --use指定程序加载的文件；
 --owned_candle为你已有的蜡烛数量；
 --max_candle指定每日获得的最大蜡烛数量；
---no用于程序管理的名称数据，所有包含keyworld的名称对应的数据会被排除；
+--no用于程序管理的名称数据，所有包含keyword的名称对应的数据会被排除；
 -en指定英文输出，-cn指定中文。  
 示例：` Atool-A-1 --total_candle-45.0 --use-afile --owned_candle-0.0 --max_candle-20 --no-晨岛 -cn `
 
