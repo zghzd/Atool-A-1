@@ -151,6 +151,7 @@
     <ClInclude Include="agreements.h" />
     <ClInclude Include="base.h" />
     <ClInclude Include="External_library.h" />
+    <ClInclude Include="LIGHT_TO_CANDLE_MAP.h" />
     <ClInclude Include="loadScenes.h" />
     <ClInclude Include="mainrun.h" />
     <ClInclude Include="scenereg.h" />

@@ -58,6 +58,9 @@
     <ClInclude Include="mainrun.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="LIGHT_TO_CANDLE_MAP.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="CC-BY-4.0.txt">
