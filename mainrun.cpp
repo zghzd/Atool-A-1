@@ -18,7 +18,7 @@ std::unordered_map<int, skyScene*> skySceneMap;
 std::vector<skyScene>SceneData;
 
 const float teleport_usedTime = 5.0f;
-const float meditate_usedTime = 6.5f;
+const float meditate_usedTime = 5.5f;
 const int startP = S_HOME;
 const coordinate startCD = { 0,0,0 };//constellation at HOME
 
