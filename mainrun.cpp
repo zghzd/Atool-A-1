@@ -239,9 +239,12 @@ int mainrun(float req_candle,
 
 	};//硬编码的内容，必须在此处注册名称
 
-	for (auto& tmp : use_file) {
-		loadfile_sceneconf(tmp, SceneData, LogFile);
-	}
+    for (auto& tmp : use_file) {
+        if (loadfile_sceneconf(tmp, SceneData, LogFile) != 0) {
+            LogFile << SL::time::current_time_with_offset() << " Skipping invalid config file: " << tmp << std::endl;
+            continue;
+        }
+    }
     for (auto& tmp : no_keyword) {
         for (auto& tmp1 : SceneData) {
             tmp1.scene_light.erase(

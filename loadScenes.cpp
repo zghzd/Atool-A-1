@@ -40,78 +40,137 @@ std::vector<std::string> extractBracedBlocks(const std::string& input) {
 }
 int loadfile_sceneconf(std::string filename, std::vector<skyScene>& SceneData, std::fstream& LogFile) {
     LogFile << SL::time::current_time_with_offset() << " Info:Configuring scene data - Loading from file -> " << filename << std::endl;
-    skyScene SceneDataFromFile;
+
     std::string SceneDataFromFile_filedata = base::fio::file_read_all(filename);
+    if (SceneDataFromFile_filedata.empty()) {
+        LogFile << SL::time::current_time_with_offset() << " Error: Failed to read file or file is empty -> " << filename << std::endl;
+        return -1;
+    }
+
     SceneDataFromFile_filedata.erase(std::remove_if(SceneDataFromFile_filedata.begin(), SceneDataFromFile_filedata.end(),
         [](unsigned char c) { return std::isspace(c); }),
         SceneDataFromFile_filedata.end());
+
     std::string prefix__s = "Atool-A-1:config:1.0:sky_candle:scene";
     if (SceneDataFromFile_filedata.find(prefix__s) == 0) {
         SceneDataFromFile_filedata.erase(0, prefix__s.length());
     }
     else {
         LogFile << SL::time::current_time_with_offset() << " Error: The configuration file format is not as expected." << std::endl;
-        exit(-1);
+        return -1;
     }
-    std::vector<std::string>  SceneDataFromFile_filedata_v;
+
+    std::vector<std::string> SceneDataFromFile_filedata_v;
     try {
         SceneDataFromFile_filedata_v = extractBracedBlocks(SceneDataFromFile_filedata);
     }
     catch (const std::exception& e) {
         LogFile << SL::time::current_time_with_offset() << e.what() << std::endl;
-        exit(-1);
+        return -1;
     }
+
     if (SceneDataFromFile_filedata_v.size() < 4) {
         LogFile << SL::time::current_time_with_offset() << " Error: The configuration file format is not as expected." << std::endl;
-        exit(-1);
+        return -1;
     }
 
     auto SceneDataFromFile_filedata_time = base::data_process::part_str(SceneDataFromFile_filedata_v[3], ";");
-    if (SL::time::days_diff(SceneDataFromFile_filedata_time[0], SL::time::current_time_with_offset()) % std::stoi(SceneDataFromFile_filedata_time[1]) != 0) {
-        return 0;//skip
+    if (SceneDataFromFile_filedata_time.size() < 2) {
+        LogFile << SL::time::current_time_with_offset() << " Error: Invalid time field in config." << std::endl;
+        return -1;
     }
+    try {
+        if (SL::time::days_diff(SceneDataFromFile_filedata_time[0], SL::time::current_time_with_offset()) % std::stoi(SceneDataFromFile_filedata_time[1]) != 0) {
+            return 0;
+        }
+    }
+    catch (const std::exception& e) {
+        LogFile << SL::time::current_time_with_offset() << " Error: Time conversion failed: " << e.what() << std::endl;
+        return -1;
+    }
+
     auto SceneDataFromFile_filedata_numandname = base::data_process::part_str_once(SceneDataFromFile_filedata_v[0], ";");
+    if (SceneDataFromFile_filedata_numandname.size() < 2) {
+        LogFile << SL::time::current_time_with_offset() << " Error: Invalid scene number/name field." << std::endl;
+        return -1;
+    }
+
     auto SceneDataFromFile_filedata_t = base::data_process::part_str(SceneDataFromFile_filedata_v[1], "/");
     std::vector<sceneFrom> SceneDataFromFile_filedata_from;
     for (auto& tmp : SceneDataFromFile_filedata_t) {
         auto tmptmp = base::data_process::part_str(tmp, ";");
+        if (tmptmp.size() < 3) {
+            LogFile << SL::time::current_time_with_offset() << " Error: Invalid scene_from entry -> " << tmp << std::endl;
+            return -1;
+        }
         sceneFrom tmp_1;
-        auto tmp11 = base::data_process::part_str(tmptmp[1], ",");
-        auto tmp12 = base::data_process::part_str(tmptmp[2], ",");
-        tmp_1 = {
-            std::stoi(tmptmp[0]),
-            {std::stof(tmp11[0]),std::stof(tmp11[1]),std::stof(tmp11[2])},
-            {std::stof(tmp12[0]),std::stof(tmp12[1]),std::stof(tmp12[2])}
-        };
+        try {
+            auto tmp11 = base::data_process::part_str(tmptmp[1], ",");
+            auto tmp12 = base::data_process::part_str(tmptmp[2], ",");
+            if (tmp11.size() < 3 || tmp12.size() < 3) {
+                LogFile << SL::time::current_time_with_offset() << " Error: Invalid coordinate format in scene_from." << std::endl;
+                return -1;
+            }
+            tmp_1 = {
+                std::stoi(tmptmp[0]),
+                {std::stof(tmp11[0]), std::stof(tmp11[1]), std::stof(tmp11[2])},
+                {std::stof(tmp12[0]), std::stof(tmp12[1]), std::stof(tmp12[2])}
+            };
+        }
+        catch (const std::exception& e) {
+            LogFile << SL::time::current_time_with_offset() << " Error: Number conversion failed in scene_from: " << e.what() << std::endl;
+            return -1;
+        }
         SceneDataFromFile_filedata_from.push_back(tmp_1);
     }
+
     auto SceneDataFromFile_filedata_L = base::data_process::part_str(SceneDataFromFile_filedata_v[2], "/");
     std::vector<skyLight> SceneDataFromFile_filedata_light;
     for (auto& tmp : SceneDataFromFile_filedata_L) {
         auto tmptmp = base::data_process::part_str(tmp, ";");
+        if (tmptmp.size() < 3) {
+            LogFile << SL::time::current_time_with_offset() << " Error: Invalid light entry -> " << tmp << std::endl;
+            return -1;
+        }
         skyLight tmp_1;
-        auto tmp11 = base::data_process::part_str(tmptmp[1], ",");
-        tmp_1 = {
-            {std::stof(tmp11[0]),std::stof(tmp11[1]),std::stof(tmp11[2])},
-            std::stof(tmptmp[0]),
-            {tmptmp[2],tmptmp[2]}
-        };
+        try {
+            auto tmp11 = base::data_process::part_str(tmptmp[1], ",");
+            if (tmp11.size() < 3) {
+                LogFile << SL::time::current_time_with_offset() << " Error: Invalid light coordinate format." << std::endl;
+                return -1;
+            }
+            tmp_1 = {
+                {std::stof(tmp11[0]), std::stof(tmp11[1]), std::stof(tmp11[2])},
+                std::stof(tmptmp[0]),
+                {tmptmp[2], tmptmp[2]}
+            };
+        }
+        catch (const std::exception& e) {
+            LogFile << SL::time::current_time_with_offset() << " Error: Number conversion failed in light: " << e.what() << std::endl;
+            return -1;
+        }
         SceneDataFromFile_filedata_light.push_back(tmp_1);
     }
-    SceneDataFromFile = {
-        std::stoi(SceneDataFromFile_filedata_numandname[0]),
-        {SceneDataFromFile_filedata_numandname[1],SceneDataFromFile_filedata_numandname[1]},
-        SceneDataFromFile_filedata_from,
-        SceneDataFromFile_filedata_light
-    };
-    //-----
+    skyScene SceneDataFromFile;
+    try {
+        SceneDataFromFile = {
+            std::stoi(SceneDataFromFile_filedata_numandname[0]),
+            {SceneDataFromFile_filedata_numandname[1], SceneDataFromFile_filedata_numandname[1]},
+            SceneDataFromFile_filedata_from,
+            SceneDataFromFile_filedata_light
+        };
+    }
+    catch (const std::exception& e) {
+        LogFile << SL::time::current_time_with_offset() << " Error: Failed to build scene data: " << e.what() << std::endl;
+        return -1;
+    }
+
     auto it = std::find_if(SceneData.begin(), SceneData.end(),
         [&](const skyScene& sc) { return sc.scene_num == SceneDataFromFile.scene_num; });
 
     if (it != SceneData.end()) {
         skyScene& existing = *it;
         existing.scene_name = SceneDataFromFile.scene_name;
-
         for (const auto& newLight : SceneDataFromFile.scene_light) {
             auto lightIt = std::find_if(existing.scene_light.begin(), existing.scene_light.end(),
                 [&](const skyLight& l) { return coordEqual(l.lightCoordinate, newLight.lightCoordinate); });
@@ -134,7 +193,6 @@ int loadfile_sceneconf(std::string filename, std::vector<skyScene>& SceneData, s
                 existing.scene_from.push_back(newFrom);
             }
         }
-
         LogFile << SL::time::current_time_with_offset() << " Info:Merged scene_num" << SceneDataFromFile.scene_num << std::endl;
     }
     else {

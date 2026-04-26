@@ -1,0 +1,5 @@
+Atool-A-1:config:1.0:sky_candle:scene
+{9;Err9}
+{0;0,0,0;0,0,0}
+{NOT_A_NUMBER;0,0,0;L}
+{2000-01-01T00:00:00+0000;1}
