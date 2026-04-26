@@ -134,6 +134,10 @@
     <ClCompile Include="mainrun.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="CONTRIBUTING.md">
+      <SubType>
+      </SubType>
+    </None>
     <None Include="doc-sky_candle.md">
       <SubType>
       </SubType>
@@ -158,7 +162,7 @@
     <ClInclude Include="sky_scene_sceneenum.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="CC-BY-4.0.txt" />
+    <Text Include="LICENSE.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
