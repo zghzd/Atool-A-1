@@ -3,4 +3,8 @@
 #include <vector>
 #include "base.h"
 
-int loadfile_sceneconf(std::string filename, std::vector<skyScene>& SceneData, std::fstream& LogFile);
+int ldFileData(std::vector<skyScene>& skySceneS,
+	std::vector<std::string>& use_file,
+	std::vector<std::string>& no_keyword,
+	std::string& use_language,
+	std::fstream& LogFile);

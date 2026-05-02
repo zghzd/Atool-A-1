@@ -41,20 +41,3 @@
 https://github.com/zghzd/Atool-A-1
 - 同时链接到开发者邮箱:
 dzfg688523@dingtalk.com  
-
-# 外部场景配置文件
-用户可以根据需求，自行编写一些可被程序加载的文件，
-若要编写这种文件，请严格按照以下格式：
-```text
-Atool-A-1:config:1.0:sky_candle:scene
-{scene_number;scene_name}
-{from_scene_number;thisX,Y,Z;fromX,Y,Z/from_scene_number;thisX,Y,Z;fromX,Y,Z/...}
-{light_number;X,Y,Z;name/}...
-{baseline_time_YYYY-MM-DDThh:mm:ss±hhmm;ableNum}
-
-```
-注：  
-- 如果允许多个元素的位置中只有一个，那么，不要添加末尾"/"分隔符，
-即"/"永远不能出现在末尾。
-- 文件内中文可能导致控制台输出乱码。
-

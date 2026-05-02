@@ -1,8 +1,8 @@
 ﻿#include "mainrun.h"
 #include "agreements.h"
 #include "loadScenes.h"
-#include "scenereg.h"
 #include "LIGHT_TO_CANDLE_MAP.h"
+#include "sky_scene_sceneenum.h"
 #include <fstream>
 #include <algorithm>
 #include <cmath>
@@ -14,9 +14,6 @@
 #include <sstream>
 #include <iomanip>
 
-std::unordered_map<int, skyScene*> skySceneMap;
-std::vector<skyScene>SceneData;
-
 const float teleport_usedTime = 5.0f;
 const float meditate_usedTime = 5.5f;
 const int startP = S_HOME;
@@ -27,31 +24,6 @@ float get_distance(coordinate A, coordinate B) {
     float dy = A.y - B.y;
     float dz = A.z - B.z;
     return std::sqrt(dx * dx + dy * dy + dz * dz);
-}
-
-skyScene *findSceneBySNum(int target_num) {
-    auto it = skySceneMap.find(target_num);
-    if (it != skySceneMap.end()) {
-        skyScene* result = it->second;
-        return result;
-    }
-    else {
-        return nullptr;
-    }
-}
-
-std::vector<int> whichCanBeTransmitted(int now_scene_num) {
-    //@return scene_numWhichIsCanBeTransmittedScene's.
-    std::vector<int> result;
-    for (const auto& scene : SceneData) {
-        for (const auto& from : scene.scene_from) {
-            if (from.from_scene_num == now_scene_num) {
-                result.push_back(scene.scene_num);
-                break;
-            }
-        }
-    }
-    return result;
 }
 
 float lightToCandle(float totalLight) {
@@ -87,27 +59,6 @@ float lightToCandle(float totalLight) {
     return candle20;
 }
 
-float maxCandleFromLights() {
-    float totalLight = 0.0f;
-    for (const auto& scene : SceneData) {
-        for (const auto& light : scene.scene_light) {
-            totalLight += light.lightNum;
-        }
-    }
-    return lightToCandle(totalLight);
-}
-
-float lightNeededForCandle(float currentLight, float needCandle) {
-    float low = 0.0f, high = currentLight + 10000000.0f;//上界足够大
-    for (int iter = 0; iter < 100; ++iter) {
-        float mid = (low + high) * 0.5f;
-        float candle = lightToCandle(mid);
-        if (candle < needCandle) low = mid;
-        else high = mid;
-    }
-    return high - currentLight;
-}
-
 //-----------------------------------------
 int mainrun(float req_candle,
 	float max_candle,
@@ -115,58 +66,23 @@ int mainrun(float req_candle,
 	std::vector<std::string> no_keyword,
 	std::string use_language,
 	std::fstream& LogFile) {
-
-	SceneData = {
-
-	};//硬编码的内容，必须在此处注册名称
-
-    for (auto& tmp : use_file) {
-        if (loadfile_sceneconf(tmp, SceneData, LogFile) != 0) {
-            LogFile << SL::time::current_time_with_offset() << " Skipping invalid config file: " << tmp << std::endl;
-            continue;
-        }
-    }
-    for (auto& tmp : no_keyword) {
-        for (auto& tmp1 : SceneData) {
-            tmp1.scene_light.erase(
-                std::remove_if(
-                    tmp1.scene_light.begin(),
-                    tmp1.scene_light.end(),
-                    [&](const skyLight& tmp2) {
-                        return (tmp2.lightName.cn.find(tmp) != std::string::npos) ||
-                            (tmp2.lightName.en.find(tmp) != std::string::npos);
-                    }
-                ),
-                tmp1.scene_light.end()
-            );
-        }
+    float total_candle;
+    if (max_candle < req_candle) { total_candle = max_candle; }
+    else { total_candle = req_candle; }
+    std::vector<skyScene>skySceneS;
+    auto LDreturnCode = ldFileData(skySceneS,
+        use_file,
+        no_keyword,
+        use_language,
+        LogFile);
+    if (LDreturnCode < 0) {
+        LogFile << SL::time::current_time_with_offset() << "Error: Function ldFileData 's return is " << LDreturnCode
+            << ". It's not finished or at known state!\n";
+        return LDreturnCode;
     }
 
-    //-----------------    use:SceneData
-    for (auto& SceneDatatmp : SceneData) {
-        skySceneMap[SceneDatatmp.scene_num] = &SceneDatatmp;
-    }
-    float totalCandleAvailable = maxCandleFromLights();
-    if (max_candle == 0.0f) max_candle = totalCandleAvailable;
-    else max_candle = std::min(max_candle, totalCandleAvailable);
 
-    float needCandle = req_candle;
-    float cycleNum = 0.0f;
-    std::string strCycleCN, strCycleEN;
 
-    if (req_candle > max_candle) {
-        needCandle = max_candle;
-        cycleNum = std::ceil(req_candle / max_candle);
-        strCycleCN = " 循环 " + std::to_string((int)cycleNum) + " 次";
-        strCycleEN = " Cycle " + std::to_string((int)cycleNum) + " times";
-    }
-
-    if (needCandle <= 0.0f) {
-        LogFile << SL::time::current_time_with_offset() << " The demand is 0, no calculation is needed." << std::endl;
-        return 0;
-    }
-
-    
     LogFile << SL::time::current_time_with_offset() << "Finished\n==========" << std::endl;
     return 0;
 }

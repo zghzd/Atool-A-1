@@ -2,9 +2,9 @@
 #include <vector>
 #include <string>
 
-struct name_cn_en {
-	std::string cn;
-	std::string en;
+struct skyName {
+	std::string cn = "未知";
+	std::string en = "Unknown";
 };
 struct coordinate {
 	float x;
@@ -12,20 +12,20 @@ struct coordinate {
 	float z;
 };
 struct skyLight {
-	coordinate lightCoordinate;
-	float lightNum;
-	name_cn_en lightName;
+	coordinate cd;
+	float num;
+	skyName name;
 };
-struct sceneFrom {
-	int from_scene_num;
-	coordinate from_scene_coordinate;
-	coordinate this_coordinate;
+struct skyTp {
+	coordinate cd;
+	int next_scene_code;
+	coordinate next_scene_coordinate;
+	skyName name;
 };
 struct skyScene {
-	int scene_num;
-	name_cn_en scene_name;
-	std::vector<sceneFrom>scene_from;
-	std::vector<skyLight>scene_light;
-	/*std::string baseline_time;
-	int ableNum;*///硬编码的数据是常驻数据，不应出现此类现象
+	int sceneCode;
+	skyName sceneName;
+	bool APBS = false;
+	std::vector<skyLight> sceneLight;
+	std::vector<skyTp>sceneTp;
 };
