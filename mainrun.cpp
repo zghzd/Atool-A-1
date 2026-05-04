@@ -14,6 +14,8 @@
 #include <sstream>
 #include <iomanip>
 
+#include "calcumain_v1.h"
+
 const float teleport_usedTime = 5.0f;
 const float meditate_usedTime = 5.5f;
 const int startP = S_HOME;
@@ -81,7 +83,7 @@ int mainrun(float req_candle,
         return LDreturnCode;
     }
 
-
+    calcumain_v1(total_candle, skySceneS, LogFile);
 
     LogFile << SL::time::current_time_with_offset() << "Finished\n==========" << std::endl;
     return 0;

@@ -130,6 +130,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Atool-A-1.cpp" />
+    <ClCompile Include="calcumain_v1.cpp" />
     <ClCompile Include="loadScenes.cpp" />
     <ClCompile Include="mainrun.cpp" />
   </ItemGroup>
@@ -154,6 +155,7 @@
   <ItemGroup>
     <ClInclude Include="agreements.h" />
     <ClInclude Include="base.h" />
+    <ClInclude Include="calcumain_v1.h" />
     <ClInclude Include="External_library.h" />
     <ClInclude Include="LIGHT_TO_CANDLE_MAP.h" />
     <ClInclude Include="loadScenes.h" />

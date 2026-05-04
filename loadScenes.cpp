@@ -3,11 +3,21 @@
 #include <fstream>
 #include <map>
 
+bool hasSubstring(const std::vector<std::string>& strs, const std::string& str) {
+	for (const auto& sub : strs) {
+		if (str.find(sub) != std::string::npos) {
+			return true;
+		}
+	}
+	return false;
+}
+
 int loadDataDB(std::vector<std::string>& LightDataDB,
 	std::vector<std::string>& TpDataDB,
 	std::fstream& LogFile,
 	std::vector<skyLight>& LightData,
-	std::vector<skyTp>& TpData);
+	std::vector<skyTp>& TpData,
+	std::vector<std::string>& no_keyword);
 bool loadFileDateF(std::string datef_V,
 	std::string Sdate_V,
 	std::string Edate_V,
@@ -150,7 +160,7 @@ int ldFileData(std::vector<skyScene>& skySceneS,
 			}
 		}
 		auto datefpass = loadFileDateF(loadFileDateF_1, loadFileDateF_2, loadFileDateF_3, LogFile);
-		auto DBS__LT = loadDataDB(LightDataDB, TpDataDB, LogFile, LightData, TpData);
+		auto DBS__LT = loadDataDB(LightDataDB, TpDataDB, LogFile, LightData, TpData, no_keyword);
 		if (!datefpass) {
 			Is_Skip = !datefpass;//pass = true
 		}
@@ -163,6 +173,7 @@ int ldFileData(std::vector<skyScene>& skySceneS,
 		if (Is_Skip) {
 			LogFile << SL::time::current_time_with_offset() << "\tThis file will be skipped!\n";
 			LogFile << SL::time::current_time_with_offset() << 1001 << std::endl;
+			Is_Skip = false;
 			continue;
 		}//数据入栈前直接跳过
 
@@ -189,6 +200,222 @@ int loadDataDB(std::vector<std::string>& LightDataDB,
 	std::vector<std::string>& TpDataDB,
 	std::fstream& LogFile,
 	std::vector<skyLight>& LightData,
-	std::vector<skyTp>& TpData) {
-	//TODO:待实现
+	std::vector<skyTp>& TpData,
+	std::vector<std::string>& no_keyword) {
+	std::vector<skyLight>preLightData; skyLight preLD;
+	std::vector<skyTp> preTpData; skyTp preTD;
+	//load LightDataDB
+	for (auto& DBfilename : LightDataDB) {
+		auto filedatas = base::fio::file_read_lines(DBfilename);
+		if (filedatas.empty()) {
+			LogFile << SL::time::current_time_with_offset() << -2000 << std::endl;
+			LogFile << SL::time::current_time_with_offset() << "\tThis file will be skipped!\n";
+			LogFile << SL::time::current_time_with_offset() << 1001 << std::endl;
+			continue;
+		}
+
+		for (auto& linedata : filedatas) {
+			auto datas = base::data_process::part_str(linedata, "\t");
+			coordinate XYZ__LD {0.0f,0.0f,0.0f}; float NN__LN = 0.0; skyName NAME__L;
+			if (datas.size() < 2 ) {
+				LogFile << SL::time::current_time_with_offset() << -2000 << std::endl;
+				LogFile << SL::time::current_time_with_offset() << "\tThis line will be skipped!\n";
+				LogFile << SL::time::current_time_with_offset() << 1001 << std::endl;
+				continue;
+			}
+			else if (datas.size() == 2) {
+				try {
+					NN__LN = std::stof(datas[1]);
+					auto tmp__d__l = base::data_process::part_str(datas[0], ",");
+					XYZ__LD = {
+						std::stof(tmp__d__l[0]),std::stof(tmp__d__l[1]),std::stof(tmp__d__l[2])
+					};
+				}
+				catch (const std::exception& e) {
+					LogFile << SL::time::current_time_with_offset() << "Type conversion failed:" << e.what() << std::endl;
+					LogFile << SL::time::current_time_with_offset() << -2001 << std::endl;
+					LogFile << SL::time::current_time_with_offset() << "\tThis line will be skipped!\n";
+					LogFile << SL::time::current_time_with_offset() << 1001 << std::endl;
+					continue;
+				}
+				if (hasSubstring(no_keyword,"未知")|| hasSubstring(no_keyword, "Unknown") ){
+					LogFile << SL::time::current_time_with_offset() << "User requested to skip.\n" << std::endl;
+					LogFile << SL::time::current_time_with_offset() << "\tThis line will be skipped!\n";
+					LogFile << SL::time::current_time_with_offset() << 1001 << std::endl;
+					continue;
+				}
+				preLD = { XYZ__LD ,NN__LN ,NAME__L };
+			}
+			else if (datas.size() == 3) {
+				try {
+					NN__LN = std::stof(datas[1]);
+					auto tmp__d__l = base::data_process::part_str(datas[0], ",");
+					XYZ__LD = {
+						std::stof(tmp__d__l[0]),std::stof(tmp__d__l[1]),std::stof(tmp__d__l[2])
+					};
+				}
+				catch (const std::exception& e) {
+					LogFile << SL::time::current_time_with_offset() << "Type conversion failed:" << e.what() << std::endl;
+					LogFile << SL::time::current_time_with_offset() << -2001 << std::endl;
+					LogFile << SL::time::current_time_with_offset() << "\tThis line will be skipped!\n";
+					LogFile << SL::time::current_time_with_offset() << 1001 << std::endl;
+					continue;
+				}
+				NAME__L.cn = datas[2];
+				if (hasSubstring(no_keyword, NAME__L.cn) || hasSubstring(no_keyword, "Unknown")) {
+					LogFile << SL::time::current_time_with_offset() << "User requested to skip.\n" << std::endl;
+					LogFile << SL::time::current_time_with_offset() << "\tThis line will be skipped!\n";
+					LogFile << SL::time::current_time_with_offset() << 1001 << std::endl;
+					continue;
+				}
+				preLD = { XYZ__LD ,NN__LN ,NAME__L };
+			}
+			else if (datas.size() == 4) {
+				try {
+					NN__LN = std::stof(datas[1]);
+					auto tmp__d__l = base::data_process::part_str(datas[0], ",");
+					XYZ__LD = {
+						std::stof(tmp__d__l[0]),std::stof(tmp__d__l[1]),std::stof(tmp__d__l[2])
+					};
+				}
+				catch (const std::exception& e) {
+					LogFile << SL::time::current_time_with_offset() << "Type conversion failed:" << e.what() << std::endl;
+					LogFile << SL::time::current_time_with_offset() << -2001 << std::endl;
+					LogFile << SL::time::current_time_with_offset() << "\tThis line will be skipped!\n";
+					LogFile << SL::time::current_time_with_offset() << 1001 << std::endl;
+					continue;
+				}
+				NAME__L.cn = datas[2]; NAME__L.en = datas[3];
+				if (hasSubstring(no_keyword, NAME__L.cn) || hasSubstring(no_keyword, NAME__L.en)) {
+					LogFile << SL::time::current_time_with_offset() << "User requested to skip.\n" << std::endl;
+					LogFile << SL::time::current_time_with_offset() << "\tThis line will be skipped!\n";
+					LogFile << SL::time::current_time_with_offset() << 1001 << std::endl;
+					continue;
+				}
+				preLD = { XYZ__LD ,NN__LN ,NAME__L };
+			}
+			else {
+				LogFile << SL::time::current_time_with_offset() << "\tToo much data to process!\n";
+				LogFile << SL::time::current_time_with_offset() << "\tThis line will be skipped!\n";
+				LogFile << SL::time::current_time_with_offset() << 1001 << std::endl;
+				continue;
+			}
+			preLightData.push_back(preLD);
+		}
+	}
+	
+	//load TpDataDB
+	for (auto& DBfilename : TpDataDB) {
+		auto filedatas = base::fio::file_read_lines(DBfilename);
+		if (filedatas.empty()) {
+			LogFile << SL::time::current_time_with_offset() << -2000 << std::endl;
+			LogFile << SL::time::current_time_with_offset() << "\tThis file will be skipped!\n";
+			LogFile << SL::time::current_time_with_offset() << 1001 << std::endl;
+			continue;
+		}
+
+		for (auto& linedata : filedatas) {
+			auto datas = base::data_process::part_str(linedata, "\t");
+			coordinate XYZ__Tp{ 0.0f,0.0f,0.0f }; int NextCode = 0; coordinate nextXYZ__Tp{ 0.0f,0.0f,0.0f }; skyName NAME__T;
+			if (datas.size() < 3) {
+				LogFile << SL::time::current_time_with_offset() << -2000 << std::endl;
+				LogFile << SL::time::current_time_with_offset() << "\tThis line will be skipped!\n";
+				LogFile << SL::time::current_time_with_offset() << 1001 << std::endl;
+				continue;
+			}
+			else if (datas.size() == 3) {
+				try {
+					NextCode = std::stoi(datas[1]);
+					auto tmp__d__l = base::data_process::part_str(datas[0], ",");
+					XYZ__Tp = {
+						std::stof(tmp__d__l[0]),std::stof(tmp__d__l[1]),std::stof(tmp__d__l[2])
+					};
+					auto tmp__d___l = base::data_process::part_str(datas[2], ",");
+					nextXYZ__Tp = {
+						std::stof(tmp__d___l[0]),std::stof(tmp__d___l[1]),std::stof(tmp__d___l[2])
+					};
+				}
+				catch (const std::exception& e) {
+					LogFile << SL::time::current_time_with_offset() << "Type conversion failed:" << e.what() << std::endl;
+					LogFile << SL::time::current_time_with_offset() << -2001 << std::endl;
+					LogFile << SL::time::current_time_with_offset() << "\tThis line will be skipped!\n";
+					LogFile << SL::time::current_time_with_offset() << 1001 << std::endl;
+					continue;
+				}
+				if (hasSubstring(no_keyword, "未知") || hasSubstring(no_keyword, "Unknown")) {
+					LogFile << SL::time::current_time_with_offset() << "User requested to skip.\n" << std::endl;
+					LogFile << SL::time::current_time_with_offset() << "\tThis line will be skipped!\n";
+					LogFile << SL::time::current_time_with_offset() << 1001 << std::endl;
+					continue;
+				}
+				preTD = { XYZ__Tp,NextCode,nextXYZ__Tp,NAME__T };
+			}
+			else if (datas.size() == 4) {
+				try {
+					NextCode = std::stoi(datas[1]);
+					auto tmp__d__l = base::data_process::part_str(datas[0], ",");
+					XYZ__Tp = {
+						std::stof(tmp__d__l[0]),std::stof(tmp__d__l[1]),std::stof(tmp__d__l[2])
+					};
+					auto tmp__d___l = base::data_process::part_str(datas[2], ",");
+					nextXYZ__Tp = {
+						std::stof(tmp__d___l[0]),std::stof(tmp__d___l[1]),std::stof(tmp__d___l[2])
+					};
+				}
+				catch (const std::exception& e) {
+					LogFile << SL::time::current_time_with_offset() << "Type conversion failed:" << e.what() << std::endl;
+					LogFile << SL::time::current_time_with_offset() << -2001 << std::endl;
+					LogFile << SL::time::current_time_with_offset() << "\tThis line will be skipped!\n";
+					LogFile << SL::time::current_time_with_offset() << 1001 << std::endl;
+					continue;
+				}
+				NAME__T.cn = datas[3];
+				if (hasSubstring(no_keyword, NAME__T.cn) || hasSubstring(no_keyword, NAME__T.en)) {
+					LogFile << SL::time::current_time_with_offset() << "User requested to skip.\n" << std::endl;
+					LogFile << SL::time::current_time_with_offset() << "\tThis line will be skipped!\n";
+					LogFile << SL::time::current_time_with_offset() << 1001 << std::endl;
+					continue;
+				}
+				preTD = { XYZ__Tp,NextCode,nextXYZ__Tp,NAME__T };
+			}
+			else if (datas.size() == 5) {
+				try {
+					NextCode = std::stoi(datas[1]);
+					auto tmp__d__l = base::data_process::part_str(datas[0], ",");
+					XYZ__Tp = {
+						std::stof(tmp__d__l[0]),std::stof(tmp__d__l[1]),std::stof(tmp__d__l[2])
+					};
+					auto tmp__d___l = base::data_process::part_str(datas[2], ",");
+					nextXYZ__Tp = {
+						std::stof(tmp__d___l[0]),std::stof(tmp__d___l[1]),std::stof(tmp__d___l[2])
+					};
+				}
+				catch (const std::exception& e) {
+					LogFile << SL::time::current_time_with_offset() << "Type conversion failed:" << e.what() << std::endl;
+					LogFile << SL::time::current_time_with_offset() << -2001 << std::endl;
+					LogFile << SL::time::current_time_with_offset() << "\tThis line will be skipped!\n";
+					LogFile << SL::time::current_time_with_offset() << 1001 << std::endl;
+					continue;
+				}
+				NAME__T.cn = datas[3]; NAME__T.en = datas[4];
+				if (hasSubstring(no_keyword, NAME__T.cn) || hasSubstring(no_keyword, NAME__T.en)) {
+					LogFile << SL::time::current_time_with_offset() << "User requested to skip.\n" << std::endl;
+					LogFile << SL::time::current_time_with_offset() << "\tThis line will be skipped!\n";
+					LogFile << SL::time::current_time_with_offset() << 1001 << std::endl;
+					continue;
+				}
+				preTD = { XYZ__Tp,NextCode,nextXYZ__Tp,NAME__T };
+			}
+			else {
+				LogFile << SL::time::current_time_with_offset() << "\tToo much data to process!\n";
+				LogFile << SL::time::current_time_with_offset() << "\tThis line will be skipped!\n";
+				LogFile << SL::time::current_time_with_offset() << 1001 << std::endl;
+				continue;
+			}
+			preTpData.push_back(preTD);
+		}
+	}
+	LightData.insert(LightData.end(), preLightData.begin(), preLightData.end());
+	TpData.insert(TpData.end(), preTpData.begin(), preTpData.end());
+	return 0;
 }

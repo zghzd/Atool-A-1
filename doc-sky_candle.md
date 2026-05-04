@@ -46,7 +46,19 @@ TpData=
 ```
 
 ## LightData数据库文件
-
+LightData数据库文件按照以下格式编写(不包括示例中的表头)
+，一行一组数据，列之间以
+水平制表符（`\t`）分隔  
+```
+coordinate	light_num	name_cn	name_en
+floatX,Y,Z	float	str	str
+```
 
 ## TpData数据库文件
-
+TpData数据库文件按照以下格式编写(不包括示例中的表头)
+，一行一组数据，列之间以
+水平制表符（`\t`）分隔  
+```
+coordinate	next_scene_code	next_scene_coordinate	name_cn	name_en
+floatX,Y,Z	int	floatX,Y,Z	str	str
+```
